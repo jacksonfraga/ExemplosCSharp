@@ -8,9 +8,9 @@ namespace jacksonf.Helpers
 {
     public static class HttpREST
     {
-        public static string Get(string url, Dictionary<string, string> headers, ProxyConfig proxyCfg)
+        public static string Get(string url, Dictionary<string, string> headers)
         {
-            HttpWebRequest req = CreateGetHttpWebRequest(url, proxyCfg);
+            HttpWebRequest req = CreateGetHttpWebRequest(url);
 
             if (headers != null)
             {
@@ -34,19 +34,19 @@ namespace jacksonf.Helpers
             return result;
         }
 
-        public static string Post(string url, ProxyConfig proxyCfg)
+        public static string Post(string url)
         {
-            return Post(url, string.Empty, null, proxyCfg);
+            return Post(url, string.Empty, null);
         }
 
-        public static string Post(string url, Dictionary<string, string> headers, ProxyConfig proxyCfg)
+        public static string Post(string url, Dictionary<string, string> headers)
         {
-            return Post(url, string.Empty, headers, proxyCfg);
+            return Post(url, string.Empty, headers);
         }
 
-        public static string Post(string url, string jsonData, Dictionary<string, string> headers, ProxyConfig proxyCfg)
+        public static string Post(string url, string jsonData, Dictionary<string, string> headers)
         {
-            HttpWebRequest req = CreatePostHttpWebRequest(url, proxyCfg);
+            HttpWebRequest req = CreatePostHttpWebRequest(url);
             string result = null;
 
             if (headers != null)
@@ -70,9 +70,9 @@ namespace jacksonf.Helpers
             return result;
         }
 
-        public static string Delete(string url, Dictionary<string, string> headers, ProxyConfig proxyCfg)
+        public static string Delete(string url, Dictionary<string, string> headers)
         {
-            HttpWebRequest req = CreateDeleteHttpWebRequest(url, proxyCfg);
+            HttpWebRequest req = CreateDeleteHttpWebRequest(url);
             string result = null;
 
             if (headers != null)
@@ -96,43 +96,24 @@ namespace jacksonf.Helpers
             return result;
         }
 
-        private static HttpWebRequest CreatePostHttpWebRequest(string url, ProxyConfig proxyCfg)
+        private static HttpWebRequest CreatePostHttpWebRequest(string url)
         {
-            return CreateHttpWebRequest(url, "POST", proxyCfg);
+            return CreateHttpWebRequest(url, "POST");
         }
 
-        private static HttpWebRequest CreateGetHttpWebRequest(string url, ProxyConfig proxyCfg)
+        private static HttpWebRequest CreateGetHttpWebRequest(string url)
         {
-            return CreateHttpWebRequest(url, "GET", proxyCfg);
+            return CreateHttpWebRequest(url, "GET");
         }
 
-        private static HttpWebRequest CreateDeleteHttpWebRequest(string url, ProxyConfig proxyCfg)
+        private static HttpWebRequest CreateDeleteHttpWebRequest(string url)
         {
-            return CreateHttpWebRequest(url, "DELETE", proxyCfg);
+            return CreateHttpWebRequest(url, "DELETE");
         }
 
-        private static HttpWebRequest CreateHttpWebRequest(string url, string method, ProxyConfig proxyCfg)
+        private static HttpWebRequest CreateHttpWebRequest(string url, string method)
         {
             WebRequest request = HttpWebRequest.Create(new Uri(url));
-            bool urlSpecific = false;
-            if (proxyCfg != null)
-                urlSpecific = !string.IsNullOrEmpty(proxyCfg.Ip) && proxyCfg.Port > 0;
-            IWebProxy curProxy = request.Proxy;
-            WebProxy newProxy = new WebProxy();
-            if (proxyCfg != null && proxyCfg.Enabled)
-            {
-                if (urlSpecific)
-                    newProxy.Address = new Uri(string.Format("http://{0}:{1}", proxyCfg.Ip, proxyCfg.Port));
-                if (proxyCfg.RequireAuthentication)
-                {
-                    if (urlSpecific)
-                        newProxy.Credentials = new NetworkCredential(proxyCfg.User, proxyCfg.Password, proxyCfg.Domain);
-                    else
-                        curProxy.Credentials = new NetworkCredential(proxyCfg.User, proxyCfg.Password, proxyCfg.Domain);
-                }
-                if (urlSpecific)
-                    request.Proxy = newProxy;
-            }
             request.Method = method;
             request.ContentType = "application/json";
             return (HttpWebRequest)request;
