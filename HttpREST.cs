@@ -4,6 +4,11 @@ using System.IO;
 using System.Net;
 using System.Text;
 
+//Exemplo consumo
+//string jsonData = JsonConvert.SerializeObject(entity);
+//string response = HttpREST.Post(urlAPI, jsonData, headers);
+//return JsonConvert.DeserializeObject<meuObject>(response);
+
 namespace jacksonf.Helpers
 {
     public static class HttpREST
